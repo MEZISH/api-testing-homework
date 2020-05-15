@@ -1,7 +1,8 @@
 # Solutions
 
 ## 1. "An accurately described JIRA ticket with whatever information you think is necessary."
-Story: Complex property service (CPS) tests 
+Story: Complex property service (CPS) tests   
+
 Sub-tasks for the story:
 * Test merchant property flow
 * Test point of sale property flow
