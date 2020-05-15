@@ -1,0 +1,1193 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Complex property service (CPS)",
+        "description": "JWT payload format",
+        "version": "2.0.0"
+    },
+    "paths": {
+        "/api/doc/{version}": {
+            "get": {
+                "tags": [
+                    "Global"
+                ],
+                "summary": "Api doc",
+                "operationId": "apiDoc",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "Documentation version X.Y",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "2.0.0"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/v2/props/list": {
+            "get": {
+                "tags": [
+                    "Global"
+                ],
+                "summary": "Get list of all avaible properties",
+                "operationId": "getPropsList",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "getPropsListResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "properties": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string",
+                                                                "example": "standard:rr_hold_period"
+                                                            },
+                                                            "info": {
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "standard:rr_hold_period"
+                                                                    },
+                                                                    "flow": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "history",
+                                                                            "lock"
+                                                                        ]
+                                                                    },
+                                                                    "permission": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "risk",
+                                                                            "finance"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:base:read",
+                            "props:finance:base:read"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v2/props/{merchantId}/unlocked": {
+            "get": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Get unlocked merchant properties (and locked if unlocked not set)",
+                "operationId": "getMerchantDraftProps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/properties"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "getMerchantDraftPropsResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "baseData": {
+                                                    "$ref": "#/components/schemas/MerchantBaseData"
+                                                },
+                                                "properties": {
+                                                    "$ref": "#/components/schemas/PropertiesData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:new:edit",
+                            "props:risk:draft:edit",
+                            "props:risk:approve:edit",
+                            "props:risk:lock:edit",
+                            "props:finance:new:edit",
+                            "props:finance:draft:edit",
+                            "props:finance:approve:edit",
+                            "props:finance:lock:edit"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v2/props/{merchantId}": {
+            "get": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Get locked merchant properties",
+                "operationId": "getMerchantProps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/properties"
+                    },
+                    {
+                        "$ref": "#/components/parameters/date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "getMerchantPropsResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "baseData": {
+                                                    "$ref": "#/components/schemas/MerchantBaseData"
+                                                },
+                                                "properties": {
+                                                    "$ref": "#/components/schemas/PropertiesData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:base:read",
+                            "props:finance:base:read"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Set merchant properties",
+                "operationId": "setMerchantProps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    }
+                ],
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetMerchantRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "changeMerchantPropsStatusResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PostRequestSuccess"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:new:edit",
+                            "props:risk:draft:edit",
+                            "props:risk:approve:edit",
+                            "props:finance:new:edit",
+                            "props:finance:draft:edit",
+                            "props:finance:approve:edit"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v2/props/{merchantId}/status": {
+            "post": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Change merchant properties status",
+                "operationId": "changeMerchantPropsStatus",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    }
+                ],
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeMerchantStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "changeMerchantPropsStatusResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PostRequestSuccess"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:draft:edit",
+                            "props:risk:approve:edit",
+                            "props:risk:lock:edit",
+                            "props:finance:draft:edit",
+                            "props:finance:approve:edit",
+                            "props:finance:lock:edit"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v2/props/{merchantId}/{posId}": {
+            "get": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Get locked point of sale properties",
+                "operationId": "getPointOfSaleProps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/posId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/properties"
+                    },
+                    {
+                        "$ref": "#/components/parameters/date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "getPointOfSalePropsResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "baseData": {
+                                                    "$ref": "#/components/schemas/PointOfSaleBaseData"
+                                                },
+                                                "properties": {
+                                                    "$ref": "#/components/schemas/PropertiesData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:base:read",
+                            "props:finance:base:read"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Set point of sale properties",
+                "operationId": "setPointOfSaleProps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/posId"
+                    }
+                ],
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetPointOfSaleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "setPointOfSalePropsResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PostRequestSuccess"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:new:edit",
+                            "props:risk:draft:edit",
+                            "props:risk:approve:edit",
+                            "props:finance:new:edit",
+                            "props:finance:draft:edit",
+                            "props:finance:approve:edit"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v2/props/{merchantId}/{posId}/status": {
+            "post": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Change point of sale properties status",
+                "operationId": "changePointOfSalePropsStatus",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/posId"
+                    }
+                ],
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePointOfSaleStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "changePointOfSalePropsStatusResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PostRequestSuccess"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:draft:edit",
+                            "props:risk:approve:edit",
+                            "props:risk:lock:edit",
+                            "props:finance:draft:edit",
+                            "props:finance:approve:edit",
+                            "props:finance:lock:edit"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v2/props/{merchantId}/{posId}/unlocked": {
+            "get": {
+                "tags": [
+                    "Merchant"
+                ],
+                "summary": "Get unlocked point of sale properties (and locked if unlocked not set)",
+                "operationId": "getPointOfSaleDraftProps",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/merchantId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/posId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/properties"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "getPointOfSaleDraftPropsResponse",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "baseData": {
+                                                    "$ref": "#/components/schemas/PointOfSaleBaseData"
+                                                },
+                                                "properties": {
+                                                    "$ref": "#/components/schemas/PropertiesData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorJsonResponse403"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "props:risk:new:edit",
+                            "props:risk:draft:edit",
+                            "props:risk:approve:edit",
+                            "props:risk:lock:edit",
+                            "props:finance:new:edit",
+                            "props:finance:draft:edit",
+                            "props:finance:approve:edit",
+                            "props:finance:lock:edit"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorJsonResponse400": {
+                "properties": {
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "code": {
+                                    "type": "integer",
+                                    "enum": [
+                                        200,
+                                        201,
+                                        202,
+                                        203
+                                    ]
+                                },
+                                "detail": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Parameter validation error",
+                                        "Not found object with id error",
+                                        "Operation not permitted due to status",
+                                        "Other error"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorJsonResponse401": {
+                "properties": {
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "code": {
+                                    "type": "integer",
+                                    "enum": [
+                                        100,
+                                        101,
+                                        102
+                                    ]
+                                },
+                                "detail": {
+                                    "type": "string",
+                                    "enum": [
+                                        "JWT Token not found",
+                                        "Invalid JWT Token",
+                                        "Expired JWT Token"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorJsonResponse403": {
+                "properties": {
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "code": {
+                                    "type": "integer",
+                                    "enum": [
+                                        103
+                                    ]
+                                },
+                                "detail": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Action forbidden"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PropertyDTO": {
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "standard:rr_hold_period"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "new"
+                    }
+                },
+                "type": "object"
+            },
+            "PropertyWithValueDTO": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/PropertyDTO"
+                    },
+                    {
+                        "properties": {
+                            "value": {
+                                "type": "string",
+                                "example": "xxx,yyy,zzz"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "ChangeMerchantStatusRequest": {
+                "properties": {
+                    "merchantId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    },
+                    "date": {
+                        "description": "default - now",
+                        "type": "string",
+                        "example": "2020-02-20 23:50:00"
+                    },
+                    "properties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PropertyDTO"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "SetMerchantRequest": {
+                "properties": {
+                    "merchantId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    },
+                    "properties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PropertyWithValueDTO"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ChangePointOfSaleStatusRequest": {
+                "properties": {
+                    "merchantId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    },
+                    "date": {
+                        "description": "default - now",
+                        "type": "string",
+                        "example": "2020-02-20 23:50:00"
+                    },
+                    "properties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PropertyDTO"
+                        }
+                    },
+                    "posId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    }
+                },
+                "type": "object"
+            },
+            "SetPointOfSaleRequest": {
+                "properties": {
+                    "merchantId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    },
+                    "properties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PropertyWithValueDTO"
+                        }
+                    },
+                    "posId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    }
+                },
+                "type": "object"
+            },
+            "PostRequestSuccess": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "MerchantBaseData": {
+                "properties": {
+                    "merchantId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    }
+                },
+                "type": "object"
+            },
+            "PointOfSaleBaseData": {
+                "properties": {
+                    "posId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    },
+                    "merchantId": {
+                        "type": "string",
+                        "example": "cc7bd5db6b074a0f8cc1fe4d"
+                    }
+                },
+                "type": "object"
+            },
+            "PropertiesData": {
+                "type": "array",
+                "items": {
+                    "properties": {
+                        "key": {
+                            "type": "string",
+                            "example": "standard:rr_hold_period"
+                        },
+                        "info": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "standard:rr_hold_period"
+                                },
+                                "flow": {
+                                    "type": "string",
+                                    "enum": [
+                                        "history",
+                                        "lock"
+                                    ]
+                                },
+                                "permission": {
+                                    "type": "string",
+                                    "enum": [
+                                        "risk",
+                                        "finance"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "status": {
+                            "type": "string",
+                            "enum": [
+                                "new",
+                                "draft",
+                                "approve",
+                                "lock"
+                            ]
+                        },
+                        "value": {
+                            "type": "string",
+                            "example": "2"
+                        }
+                    },
+                    "type": "object"
+                }
+            }
+        },
+        "parameters": {
+            "date": {
+                "name": "date",
+                "in": "query",
+                "description": "DateTimeParam, by default - now",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": "2020-01-01 23:50:00",
+                    "example": "2020-01-01 23:50:00"
+                }
+            },
+            "properties": {
+                "name": "properties",
+                "in": "query",
+                "description": "Properties",
+                "required": true,
+                "explode": false,
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "standard:rr_hold_period"
+                    }
+                }
+            },
+            "merchantId": {
+                "name": "merchantId",
+                "in": "path",
+                "description": "Merchant Id",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "cc7bd5db6b074a0f8cc1fe4d"
+                }
+            },
+            "posId": {
+                "name": "posId",
+                "in": "path",
+                "description": "Point of Sale Id",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "cc7bd5db6b074a0f8cc1fe4d"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
